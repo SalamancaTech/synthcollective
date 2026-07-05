@@ -103,7 +103,64 @@ export const mapData = {
                                             datetime: 'July 4, 2026 • 10:45 AM',
                                             bodyHtml: '<p>Aliquam erat volutpat. Ut tincidunt sit amet tellus at convallis.</p><blockquote>"What upscale model did you use for the final render pass?"</blockquote><p>Curabitur vel nisl non ante suscipit auctor. Vivamus id justo vitae lorem gravida pharetra non vitae velit.</p>',
                                             hazards: { top: 12, right: 5, bottom: 1, left: 8 },
-                                            topTitle: 'Severity/Impact', rightTitle: 'Relevance', bottomTitle: 'Clarity', leftTitle: 'Health/Insight'
+                                            topTitle: 'Severity/Impact', rightTitle: 'Relevance', bottomTitle: 'Clarity', leftTitle: 'Health/Insight',
+                                            replies: [
+                                                {
+                                                    id: 'comment-2-reply-1',
+                                                    avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=PixelPunk',
+                                                    username: 'PixelPunk',
+                                                    datetime: 'July 4, 2026 • 11:00 AM',
+                                                    bodyHtml: '<p>I used RealESRGAN_x4plus for the upscaling, layered with a very light film grain overlay in post.</p>',
+                                                    hazards: { top: 3, right: 35, bottom: 2, left: 5 }
+                                                },
+                                                {
+                                                    id: 'comment-2-reply-2',
+                                                    avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=CyberUser1',
+                                                    username: 'CyberUser1',
+                                                    datetime: 'July 4, 2026 • 11:15 AM',
+                                                    bodyHtml: '<p>Awesome, thanks! The grain definitely helps tie the neon reflections together.</p>',
+                                                    hazards: { top: 1, right: 10, bottom: 5, left: 2 }
+                                                }
+                                            ],
+                                            threads: [
+                                                {
+                                                    id: 'comment-2-thread-1',
+                                                    avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=RenderMax',
+                                                    username: 'RenderMax',
+                                                    datetime: 'July 4, 2026 • 11:30 AM',
+                                                    bodyHtml: '<p>Does anyone know if RealESRGAN is still the best for architecture? I heard Topaz is getting better at edge preservation.</p>',
+                                                    hazards: { top: 8, right: 40, bottom: 6, left: 15 },
+                                                    replies: [
+                                                        {
+                                                            id: 'comment-2-thread-1-reply-1',
+                                                            avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=DataSmith',
+                                                            username: 'DataSmith',
+                                                            datetime: 'July 4, 2026 • 11:45 AM',
+                                                            bodyHtml: '<p>Topaz is great but overkill for simple stylized renders like this. ESRGAN hits the sweet spot for open source.</p>',
+                                                            hazards: { top: 12, right: 20, bottom: 4, left: 9 }
+                                                        },
+                                                        {
+                                                            id: 'comment-2-thread-1-reply-2',
+                                                            avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=RenderMax',
+                                                            username: 'RenderMax',
+                                                            datetime: 'July 4, 2026 • 12:00 PM',
+                                                            bodyHtml: '<p>Good point, I will stick to ESRGAN for my workflow then.</p>',
+                                                            hazards: { top: 2, right: 15, bottom: 2, left: 1 }
+                                                        }
+                                                    ],
+                                                    threads: [
+                                                        {
+                                                            id: 'comment-2-thread-2',
+                                                            avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=TopazFan',
+                                                            username: 'TopazFan',
+                                                            datetime: 'July 4, 2026 • 12:15 PM',
+                                                            bodyHtml: '<p>Wait, I disagree. The new Topaz Video AI V4 handles micro-details in still frames surprisingly well if you extract the I-frames.</p>',
+                                                            hazards: { top: 25, right: 15, bottom: 10, left: 30 },
+                                                            replies: []
+                                                        }
+                                                    ]
+                                                }
+                                            ]
                                         }
                                     ]
                                 },
@@ -124,7 +181,18 @@ export const mapData = {
                                             datetime: 'July 4, 2026 • 11:20 AM',
                                             bodyHtml: '<p>Nulla facilisi. Suspendisse potenti. <strong>I tried this exact prompt configuration</strong> and the results were stunning.</p>',
                                             hazards: { top: 9, right: 22, bottom: 4, left: 1 },
-                                            topTitle: 'Severity/Impact', rightTitle: 'Relevance', bottomTitle: 'Clarity', leftTitle: 'Health/Insight'
+                                            topTitle: 'Severity/Impact', rightTitle: 'Relevance', bottomTitle: 'Clarity', leftTitle: 'Health/Insight',
+                                            replies: [
+                                                {
+                                                    id: 'comment-3-reply-1',
+                                                    avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=NewbieArt',
+                                                    username: 'NewbieArt',
+                                                    datetime: 'July 4, 2026 • 11:35 AM',
+                                                    bodyHtml: '<p>Did you use the same negative prompts too? I keep getting weird artifacts in the shadows.</p>',
+                                                    hazards: { top: 1, right: 15, bottom: 3, left: 1 }
+                                                }
+                                            ],
+                                            threads: []
                                         }
                                     ]
                                 },
@@ -145,7 +213,34 @@ export const mapData = {
                                             datetime: 'July 4, 2026 • 1:15 PM',
                                             bodyHtml: '<p>Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae. Very poetic interpretation!</p>',
                                             hazards: { top: 2, right: 8, bottom: 1, left: 19 },
-                                            topTitle: 'Severity/Impact', rightTitle: 'Relevance', bottomTitle: 'Clarity', leftTitle: 'Health/Insight'
+                                            topTitle: 'Severity/Impact', rightTitle: 'Relevance', bottomTitle: 'Clarity', leftTitle: 'Health/Insight',
+                                            replies: [
+                                                {
+                                                    id: 'comment-4-reply-1',
+                                                    avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=ArtCritic',
+                                                    username: 'ArtCritic',
+                                                    datetime: 'July 4, 2026 • 2:00 PM',
+                                                    bodyHtml: '<p>The juxtaposition of bright lights and dark corners really emphasizes the isolation theme.</p>',
+                                                    hazards: { top: 5, right: 10, bottom: 2, left: 25 }
+                                                },
+                                                {
+                                                    id: 'comment-4-reply-2',
+                                                    avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=LoremSage',
+                                                    username: 'LoremSage',
+                                                    datetime: 'July 4, 2026 • 2:10 PM',
+                                                    bodyHtml: '<p>Exactly! It\'s almost neo-noir in its execution.</p>',
+                                                    hazards: { top: 1, right: 5, bottom: 1, left: 15 }
+                                                },
+                                                {
+                                                    id: 'comment-4-reply-3',
+                                                    avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=CyberUser1',
+                                                    username: 'CyberUser1',
+                                                    datetime: 'July 4, 2026 • 2:25 PM',
+                                                    bodyHtml: '<p>I just like the cool blue colors lol.</p>',
+                                                    hazards: { top: 1, right: 2, bottom: 8, left: 1 }
+                                                }
+                                            ],
+                                            threads: []
                                         }
                                     ]
                                 },
@@ -187,9 +282,73 @@ export const mapData = {
                             height: 6000,
                             coverHtml: `
                                 <div style="font-size: 600px;">🐉</div>
-                                <div style="font-size: 150px; color: #94a3b8; margin-top: 100px;">3 Rooms • 24 Comments</div>
+                                <div style="font-size: 150px; color: #94a3b8; margin-top: 100px;">2 Rooms • 8 Comments</div>
                             `,
-                            children: []
+                            children: [
+                                {
+                                    id: 'room-fantasy-art',
+                                    type: 'room',
+                                    title: 'Room: The Summit',
+                                    x: 300,
+                                    y: 1000,
+                                    width: 2500,
+                                    height: 4500,
+                                    contentHtml: '<div class="room-content text-center italic opacity-70" style="margin-top: 150px;">(Epic Dragon Rendering Displayed Here)</div>',
+                                    comments: [
+                                        {
+                                            id: 'fantasy-comment-1',
+                                            avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=DragonLord',
+                                            username: 'DragonLord',
+                                            datetime: 'July 5, 2026 • 08:00 AM',
+                                            bodyHtml: '<p>The scale of the creature compared to the tiny knight in the foreground is masterful.</p>',
+                                            hazards: { top: 12, right: 30, bottom: 2, left: 5 },
+                                            topTitle: 'Severity', rightTitle: 'Relevance', bottomTitle: 'Clarity', leftTitle: 'Insight',
+                                            replies: [
+                                                {
+                                                    id: 'fantasy-reply-1',
+                                                    avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=ScaleWatcher',
+                                                    username: 'ScaleWatcher',
+                                                    datetime: 'July 5, 2026 • 08:30 AM',
+                                                    bodyHtml: '<p>Agreed! It reminds me of the classic 80s fantasy book covers.</p>',
+                                                    hazards: { top: 1, right: 15, bottom: 0, left: 8 }
+                                                }
+                                            ],
+                                            threads: [
+                                                {
+                                                    id: 'fantasy-thread-1',
+                                                    avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=LoreMaster',
+                                                    username: 'LoreMaster',
+                                                    datetime: 'July 5, 2026 • 09:00 AM',
+                                                    bodyHtml: '<p>I think the knight is actually holding the fabled Sword of Aethelgard. If you zoom in on the hilt, you can see the runes.</p>',
+                                                    hazards: { top: 8, right: 45, bottom: 10, left: 20 },
+                                                    replies: [
+                                                        {
+                                                            id: 'fantasy-thread-reply-1',
+                                                            avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=DragonLord',
+                                                            username: 'DragonLord',
+                                                            datetime: 'July 5, 2026 • 09:15 AM',
+                                                            bodyHtml: '<p>Whoa, good catch! I completely missed that detail.</p>',
+                                                            hazards: { top: 0, right: 5, bottom: 0, left: 2 }
+                                                        }
+                                                    ],
+                                                    threads: []
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    id: 'room-fantasy-prompt',
+                                    type: 'room',
+                                    title: 'Room: Workflow',
+                                    x: 3200,
+                                    y: 1000,
+                                    width: 2500,
+                                    height: 4500,
+                                    contentHtml: '<div class="room-content" style="font-size: 60px;"><p><strong class="text-green-400">Model:</strong> SDXL 1.0<br><strong class="text-green-400">Steps:</strong> 40</p></div>',
+                                    comments: []
+                                }
+                            ]
                         }
                     ]
                 }
