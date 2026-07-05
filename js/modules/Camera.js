@@ -76,9 +76,14 @@ export class Camera {
             this.isAnimating = false;
             clearTimeout(this.snapTimeout);
 
-            const zoomSensitivity = 0.001;
-            const delta = -e.deltaY * zoomSensitivity;
+            // Clamp deltaY to prevent massive jumps from high-resolution trackpads
+            const clampedDeltaY = Math.min(Math.max(e.deltaY, -50), 50);
 
+            // Decrease sensitivity for a more controlled zoom feel
+            const zoomSensitivity = 0.0015;
+            const delta = -clampedDeltaY * zoomSensitivity;
+
+            // Calculate new scale
             const newScale = this.targetScale * Math.exp(delta);
             const clampedScale = Math.min(Math.max(0.002, newScale), 5);
 
@@ -86,9 +91,20 @@ export class Camera {
             const mouseX = e.clientX - rect.left;
             const mouseY = e.clientY - rect.top;
 
-            this.targetPanX = mouseX - (mouseX - this.targetPanX) * (clampedScale / this.targetScale);
-            this.targetPanY = mouseY - (mouseY - this.targetPanY) * (clampedScale / this.targetScale);
+            // Fix: Calculate pan offsets using the CURRENT visual position of the map,
+            // not the target position. This ensures the zoom stays perfectly centered
+            // on the user's cursor even if they are zooming rapidly.
+
+            // Step 1: Find where the mouse is pointing relative to the unscaled map based on *current* visual state
+            const mapCursorX = (mouseX - this.currentPanX) / this.currentScale;
+            const mapCursorY = (mouseY - this.currentPanY) / this.currentScale;
+
+            // Step 2: Set the new target scale
             this.targetScale = clampedScale;
+
+            // Step 3: Shift the target pan so that specific unscaled map coordinate stays under the mouse
+            this.targetPanX = mouseX - (mapCursorX * this.targetScale);
+            this.targetPanY = mouseY - (mapCursorY * this.targetScale);
 
             this.triggerSnapCheck();
         }, { passive: false });
@@ -96,7 +112,8 @@ export class Camera {
 
     triggerSnapCheck() {
         clearTimeout(this.snapTimeout);
-        this.snapTimeout = setTimeout(() => this.attemptMagneticSnap(), 250);
+        // Increased delay slightly to prevent premature snapping while the user is still making micro-adjustments
+        this.snapTimeout = setTimeout(() => this.attemptMagneticSnap(), 400);
     }
 
     attemptMagneticSnap() {
@@ -218,9 +235,12 @@ export class Camera {
 
     renderLoop() {
         if (!this.isAnimating) {
-            this.currentScale += (this.targetScale - this.currentScale) * 0.08;
-            this.currentPanX += (this.targetPanX - this.currentPanX) * 0.08;
-            this.currentPanY += (this.targetPanY - this.currentPanY) * 0.08;
+            // Decreased the lerp smoothing factor from 0.08 to 0.04 to give a much slower,
+            // more cinematic and controllable gliding effect when catching up to the target.
+            const lerpFactor = 0.04;
+            this.currentScale += (this.targetScale - this.currentScale) * lerpFactor;
+            this.currentPanX += (this.targetPanX - this.currentPanX) * lerpFactor;
+            this.currentPanY += (this.targetPanY - this.currentPanY) * lerpFactor;
 
             if (Math.abs(this.targetScale - this.currentScale) > 0.00001 ||
                 Math.abs(this.targetPanX - this.currentPanX) > 0.01) {
