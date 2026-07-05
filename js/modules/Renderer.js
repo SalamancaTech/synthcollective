@@ -55,8 +55,22 @@ export class Renderer {
             commentContainer.className = 'layer-object comment-container';
 
             entity.comments.forEach(comment => {
-                const commentEl = this.createCommentElement(comment);
-                commentContainer.appendChild(commentEl);
+                const threadRow = document.createElement('div');
+                threadRow.className = 'thread-row';
+
+                // Build the main comment and its vertical Z-axis replies stack
+                const mainStack = this.createCommentStack(comment);
+                threadRow.appendChild(mainStack);
+
+                // Build horizontal side-threads
+                if (comment.threads && comment.threads.length > 0) {
+                    comment.threads.forEach(threadComment => {
+                        const sideStack = this.createCommentStack(threadComment);
+                        threadRow.appendChild(sideStack);
+                    });
+                }
+
+                commentContainer.appendChild(threadRow);
             });
 
             el.appendChild(commentContainer);
@@ -73,9 +87,58 @@ export class Renderer {
         return el;
     }
 
-    createCommentElement(comment) {
+    createCommentStack(commentData) {
+        const stackContainer = document.createElement('div');
+        stackContainer.className = 'comment-stack-container';
+
+        const stack = document.createElement('div');
+        stack.className = 'comment-stack';
+
+        // Flatten the comment and its nested replies into an array for the stack
+        const cards = [commentData];
+        if (commentData.replies) {
+            cards.push(...commentData.replies);
+        }
+
+        cards.forEach((cardData, index) => {
+            const cardEl = this.createCommentElement(cardData, index);
+            stack.appendChild(cardEl);
+        });
+
+        stackContainer.appendChild(stack);
+
+        // We must ensure the container has a defined height so it takes up space in the DOM,
+        // because its absolute children will collapse it otherwise.
+        // We defer this slightly so the browser can calculate the height of the first card.
+        setTimeout(() => {
+            if (stack.firstElementChild) {
+                const height = stack.firstElementChild.offsetHeight;
+                if(height > 0) {
+                    stackContainer.style.height = `${height}px`;
+                    stack.style.height = `${height}px`;
+                } else {
+                    // Fallback height if not fully rendered yet
+                    stackContainer.style.height = '1800px';
+                    stack.style.height = '1800px';
+                }
+            }
+        }, 100);
+
+        return stackContainer;
+    }
+
+    createCommentElement(comment, stackIndex = 0) {
         const el = document.createElement('div');
         el.className = 'entity comment-card object';
+
+        // If it's a nested reply, it stacks on top
+        if (stackIndex > 0) {
+            el.classList.add('stacked');
+        }
+
+        // Add a data attribute so the Camera can calculate Z-depth
+        el.setAttribute('data-stack-index', stackIndex);
+
         el.onclick = (e) => {
             if (window.zoomToBox) window.zoomToBox(el, e);
         };

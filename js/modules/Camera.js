@@ -253,6 +253,79 @@ export class Camera {
     applyTransforms() {
         this.map.style.transform = `translate(${this.currentPanX}px, ${this.currentPanY}px) scale(${this.currentScale})`;
         this.updateSemanticZoom();
+        this.updateStackDepth();
+    }
+
+    updateStackDepth() {
+        // If we aren't zoomed into the object layer, reset all stacks and bail out early
+        if (this.viewport.getAttribute('data-level') !== 'object') {
+            document.querySelectorAll('.comment-card').forEach(card => {
+                card.style.transform = '';
+                card.style.opacity = '1';
+                card.style.pointerEvents = '';
+            });
+            return;
+        }
+
+        // The baseline scale at which a single comment card roughly fills the screen
+        const baselineObjectScale = (window.innerHeight * 0.75) / 6000 * 2;
+
+        // How much further they have zoomed past the baseline
+        // e.g. 1.0 = at baseline, 2.0 = zoomed in twice as deep
+        let zoomDepthRatio = this.currentScale / baselineObjectScale;
+
+        // We configure "one layer" of depth to equal a 2x zoom multiplier.
+        // E.g., Depth 0 = ratio 1 to 2. Depth 1 = ratio 2 to 4. Depth 2 = ratio 4 to 8.
+        // We use Math.log2 to convert this exponential ratio into a linear depth index.
+        // A depth of 0.5 means halfway transitioned from layer 0 to layer 1.
+        let linearDepth = Math.log2(Math.max(1, zoomDepthRatio));
+
+        const stacks = document.querySelectorAll('.comment-stack');
+        stacks.forEach(stack => {
+            const cards = Array.from(stack.querySelectorAll('.comment-card'));
+
+            cards.forEach((card, index) => {
+                // Calculate this specific card's position relative to the current camera depth
+                const relativeDepth = index - linearDepth;
+
+                if (relativeDepth < -0.5) {
+                    // Card is completely "behind" the camera (passed through)
+                    card.style.transform = 'scale(1.5) translateY(-500px)';
+                    card.style.opacity = '0';
+                    card.style.pointerEvents = 'none';
+                    card.style.zIndex = '0';
+                } else if (relativeDepth < 0) {
+                    // Card is actively lifting off/passing the camera
+                    // scale goes from 1 to 1.5, translateY goes from 0 to -500px, opacity fades out
+                    const progress = -relativeDepth * 2; // 0 to 1
+                    const scale = 1 + (progress * 0.5);
+                    const y = -(progress * 500);
+                    const opacity = 1 - progress;
+
+                    card.style.transform = `scale(${scale}) translateY(${y}px)`;
+                    card.style.opacity = `${opacity}`;
+                    card.style.pointerEvents = 'auto'; // Still clickable until fully faded
+                    card.style.zIndex = '10';
+                } else if (relativeDepth === 0) {
+                    // Perfect focus
+                    card.style.transform = 'scale(1) translateY(0px)';
+                    card.style.opacity = '1';
+                    card.style.pointerEvents = 'auto';
+                    card.style.zIndex = '5';
+                } else {
+                    // Card is "below" the current layer, waiting to be pulled up
+                    // We stack them slightly offset and scaled down to look like a physical deck
+                    const clampDepth = Math.min(relativeDepth, 3); // Max visual stack depth of 3
+                    const scale = 1 - (clampDepth * 0.05);
+                    const y = clampDepth * 100;
+
+                    card.style.transform = `scale(${scale}) translateY(${y}px)`;
+                    card.style.opacity = `${1 - (clampDepth * 0.2)}`;
+                    card.style.pointerEvents = 'none'; // Lower cards can't be clicked
+                    card.style.zIndex = `${5 - Math.ceil(clampDepth)}`;
+                }
+            });
+        });
     }
 
     updateSemanticZoom() {

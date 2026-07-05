@@ -65,7 +65,36 @@ export const mapData = {
                                             datetime: 'July 4, 2026 • 09:12 AM',
                                             bodyHtml: '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. <strong>The volumetric lighting here is absolutely incredible!</strong> Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>',
                                             hazards: { top: 42, right: 15, bottom: 3, left: 8 },
-                                            topTitle: 'Severity/Impact', rightTitle: 'Relevance', bottomTitle: 'Clarity', leftTitle: 'Health/Insight'
+                                            topTitle: 'Severity/Impact', rightTitle: 'Relevance', bottomTitle: 'Clarity', leftTitle: 'Health/Insight',
+                                            replies: [
+                                                {
+                                                    id: 'comment-1-reply-1',
+                                                    avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=SynthLover',
+                                                    username: 'SynthLover',
+                                                    datetime: 'July 4, 2026 • 09:30 AM',
+                                                    bodyHtml: '<p>I agree, the lighting really makes the atmosphere pop. Did you use a specific LoRA for the neon glow?</p>',
+                                                    hazards: { top: 5, right: 12, bottom: 2, left: 1 }
+                                                },
+                                                {
+                                                    id: 'comment-1-reply-2',
+                                                    avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=NeonGlow',
+                                                    username: 'NeonGlow',
+                                                    datetime: 'July 4, 2026 • 09:45 AM',
+                                                    bodyHtml: '<p>Actually no, just raw prompting with a high emphasis on bloom and volumetric scattering.</p>',
+                                                    hazards: { top: 2, right: 18, bottom: 1, left: 0 }
+                                                }
+                                            ],
+                                            threads: [
+                                                {
+                                                    id: 'comment-1-thread-1',
+                                                    avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=TechDebater',
+                                                    username: 'TechDebater',
+                                                    datetime: 'July 4, 2026 • 10:00 AM',
+                                                    bodyHtml: '<p>Speaking of volumetric lighting, I feel like the current generation of models struggles to maintain contrast when bloom is too high. Has anyone else noticed this?</p>',
+                                                    hazards: { top: 15, right: 25, bottom: 8, left: 12 },
+                                                    replies: []
+                                                }
+                                            ]
                                         },
                                         {
                                             id: 'comment-2',

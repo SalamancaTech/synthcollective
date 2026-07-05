@@ -169,15 +169,36 @@ body, html {
 .comment-container {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     width: 100%;
-    gap: 200px;
+    gap: 300px;
     margin-top: 300px;
     padding-bottom: 300px;
+    padding-left: 200px;
+}
+
+.thread-row {
+    display: flex;
+    flex-direction: row;
+    gap: 200px;
+    align-items: flex-start;
+}
+
+/* The physical space a stack of cards takes up in the row */
+.comment-stack-container {
+    position: relative;
+    width: 5200px; /* Width of card + padding for borders */
+    height: auto;
+}
+
+.comment-stack {
+    position: relative;
+    width: 100%;
+    /* We will set the height via JS based on the first card so the stack container holds its shape */
 }
 
 .comment-card {
-    position: relative; /* Normal flow inside the container */
+    position: relative;
     background: #0f172a;
     border: 15px solid #475569;
     border-radius: 60px;
@@ -186,14 +207,23 @@ body, html {
     display: flex;
     flex-direction: column;
     gap: 150px;
-    box-shadow: 0 40px 100px rgba(0,0,0,0.3);
+    box-shadow: 0 40px 100px rgba(0,0,0,0.5);
     cursor: pointer;
+    /* Smooth transitions for the 3D scroll effect */
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out, filter 0.3s ease-out, box-shadow 0.3s ease-out;
+    transform-origin: center center;
+}
+
+/* When a card is in a stack (a reply), it sits absolutely on top of the base card */
+.comment-card.stacked {
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 .comment-card:hover {
-    transform: translateY(-20px);
     border-color: #64748b;
-    box-shadow: 0 80px 200px rgba(0,0,0,0.5);
+    box-shadow: 0 80px 200px rgba(0,0,0,0.8);
     z-index: 100;
 }
 
