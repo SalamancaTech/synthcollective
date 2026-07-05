@@ -20,6 +20,10 @@ export class Camera {
         this.startY = 0;
         this.snapTimeout = null;
 
+        // Thresholding variables
+        this.isSnapped = false;
+        this.scrollAccumulator = 0;
+
         this.initEventListeners();
         this.renderLoop();
 
@@ -33,6 +37,7 @@ export class Camera {
 
             this.isAnimating = false;
             this.isDragging = true;
+            this.isSnapped = false;
             this.targetScale = this.currentScale;
             this.targetPanX = this.currentPanX;
             this.targetPanY = this.currentPanY;
@@ -79,6 +84,23 @@ export class Camera {
             // Clamp deltaY to prevent massive jumps from high-resolution trackpads
             const clampedDeltaY = Math.min(Math.max(e.deltaY, -50), 50);
 
+            // --- THRESHOLD / FRICTION LOGIC ---
+            // If the camera is magnetically snapped into a container, require the user to
+            // build up enough scroll momentum to "break out" of it. This prevents accidental drifting.
+            if (this.isSnapped) {
+                this.scrollAccumulator += clampedDeltaY;
+
+                // If they haven't scrolled hard enough, swallow the input and return early
+                if (Math.abs(this.scrollAccumulator) < 150) {
+                    this.triggerSnapCheck();
+                    return;
+                } else {
+                    // Threshold broken! Free the camera and continue processing the zoom.
+                    this.isSnapped = false;
+                    this.scrollAccumulator = 0;
+                }
+            }
+
             // Decrease sensitivity for a more controlled zoom feel
             const zoomSensitivity = 0.0015;
             const delta = -clampedDeltaY * zoomSensitivity;
@@ -119,7 +141,8 @@ export class Camera {
     attemptMagneticSnap() {
         if (this.isDragging || this.isAnimating) return;
 
-        const entities = document.querySelectorAll('.entity:not(.object)');
+        // Note: we now include .object (comment cards) in the magnetic snap scan!
+        const entities = document.querySelectorAll('.entity');
         let closestEntity = null;
         let closestDistance = Infinity;
         let targetSnapScale = null;
@@ -130,6 +153,9 @@ export class Camera {
         const viewportCenterY = window.innerHeight / 2;
 
         entities.forEach(el => {
+            // Only try to snap to elements that are currently visible to avoid snapping to hidden layers
+            if (window.getComputedStyle(el).opacity === '0' || el.style.pointerEvents === 'none') return;
+
             const rect = el.getBoundingClientRect();
             const mapRect = this.map.getBoundingClientRect();
 
@@ -143,11 +169,25 @@ export class Camera {
             const scaleX = (window.innerWidth * padding) / unscaledWidth;
             const scaleY = (window.innerHeight * padding) / unscaledHeight;
             let focusScale = Math.min(scaleX, scaleY);
+
+            // If this is a stacked comment reply (depth > 0), we must calculate its required
+            // exponential scale to pull it to the front of the Z-axis stack.
+            const stackIndex = el.getAttribute('data-stack-index');
+            if (stackIndex && parseInt(stackIndex, 10) > 0) {
+                // The baseline scale at which the parent card fills the screen
+                const baselineObjectScale = (window.innerHeight * 0.75) / 6000 * 2;
+                // Z-Depth requires doubling the scale per layer
+                focusScale = baselineObjectScale * Math.pow(2, parseInt(stackIndex, 10));
+            }
+
             focusScale = Math.min(Math.max(0.002, focusScale), 5);
 
+            // Give a more generous scale difference allowance (30%) for comments
+            // since scrolling through the Z-axis can be fast.
+            const scaleTolerance = el.classList.contains('object') ? 0.30 : 0.10;
             const scaleDiff = Math.abs(this.targetScale - focusScale) / focusScale;
 
-            if (scaleDiff <= 0.10) {
+            if (scaleDiff <= scaleTolerance) {
                 const currentScreenX = elementCenterX * this.targetScale + this.targetPanX;
                 const currentScreenY = elementCenterY * this.targetScale + this.targetPanY;
 
@@ -167,6 +207,11 @@ export class Camera {
             this.targetScale = targetSnapScale;
             this.targetPanX = targetSnapPanX;
             this.targetPanY = targetSnapPanY;
+
+            // Set a flag that we have snapped. This will be used to enforce a scroll threshold
+            // before breaking the lock.
+            this.isSnapped = true;
+            this.scrollAccumulator = 0;
         }
     }
 
@@ -189,10 +234,23 @@ export class Camera {
         const scaleY = (window.innerHeight * padding) / unscaledHeight;
 
         let focusScale = Math.min(scaleX, scaleY);
+
+        // If clicking on a nested comment, we must set the target scale deep enough
+        // into the Z-axis to visually pull it to the front
+        const stackIndex = element.getAttribute('data-stack-index');
+        if (stackIndex && parseInt(stackIndex, 10) > 0) {
+            const baselineObjectScale = (window.innerHeight * 0.75) / 6000 * 2;
+            focusScale = baselineObjectScale * Math.pow(2, parseInt(stackIndex, 10));
+        }
+
         focusScale = Math.min(Math.max(0.002, focusScale), 5);
 
         const focusPanX = window.innerWidth / 2 - (elementCenterX * focusScale);
         const focusPanY = window.innerHeight / 2 - (elementCenterY * focusScale);
+
+        // Treat click-to-zoom as an intentional snap lock
+        this.isSnapped = true;
+        this.scrollAccumulator = 0;
 
         this.animateZoom(focusScale, focusPanX, focusPanY);
     }
